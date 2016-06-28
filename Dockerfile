@@ -1,49 +1,42 @@
 
 FROM debian:jessie
-MAINTAINER Matthew Finkel <mfinkel@shoretel.com>
+MAINTAINER Matt Finkel <finkel.matt@gmail.com>
 VOLUME [ "/src", "/workspace" ]
+WORKDIR /workspace
+
+ARG uid
+ARG gid
 
 RUN apt-get update -y && \
 		apt-get install -y \
 		vim \
 		zsh \
-		screen \
 		git \
 		python \
 		exuberant-ctags
 
-RUN mkdir /config
+RUN mkdir -p /home/mfinkel
+RUN groupadd -r -g $gid mfinkel
+RUN useradd -r -u $uid -d /home/mfinkel -g mfinkel mfinkel
+RUN chown mfinkel:mfinkel /home/mfinkel
 
-WORKDIR /workspace
-RUN mkdir /config/versioned
+USER mfinkel
 
-RUN mkdir /config/blah
+RUN mkdir /home/mfinkel/config
+RUN git clone https://github.com/fffinkel/dotfiles.git /home/mfinkel/config/dotfiles
+RUN git clone https://github.com/fffinkel/vim.git /home/mfinkel/config/vim
+RUN git clone https://github.com/fffinkel/zsh.git /home/mfinkel/config/zsh
 
-RUN groupadd -r mfinkel && useradd -r -d /workspace -g mfinkel mfinkel
+RUN cd /home/mfinkel/config/zsh && git submodule init
+RUN cd /home/mfinkel/config/zsh &&  git submodule update
 
-RUN chsh -s /bin/zsh
+RUN ln -s /home/mfinkel/config/vim/vim /home/mfinkel/.vim
+RUN ln -s /home/mfinkel/config/vim/vimrc /home/mfinkel/.vimrc
+RUN ln -s /home/mfinkel/config/zsh/zsh /home/mfinkel/.zsh
+RUN ln -s /home/mfinkel/config/zsh/zshrc /home/mfinkel/.zshrc
 
-RUN git clone https://github.com/fffinkel/dotfiles.git /config/dotfiles
-RUN git clone https://github.com/fffinkel/vim.git /config/vim
-RUN git clone https://github.com/fffinkel/zsh.git /config/zsh
-
-WORKDIR /config/zsh
-RUN git submodule init
-RUN git submodule update
-WORKDIR /workspace
-
-RUN ln -s /config/vim/vim ~/.vim
-RUN ln -s /config/vim/vimrc ~/.vimrc
-RUN ln -s /config/zsh/zsh ~/.zsh
-RUN ln -s /config/zsh/zshrc ~/.zshrc
-RUN ln -s /config/dotfiles/screenrc ~/.screenrc
-
-RUN git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-
-RUN mkdir ~/.vim/swap
+RUN git clone https://github.com/VundleVim/Vundle.vim.git /home/mfinkel/.vim/bundle/Vundle.vim
 
 RUN vim +PluginInstall +qall
-
-#USER mfinkel
 
 ENTRYPOINT zsh
