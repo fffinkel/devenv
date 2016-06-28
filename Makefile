@@ -12,10 +12,6 @@ run: build
 		-v /home/mfinkel/src/opsys/cirrus:/workspace/ \
 		$(DOCKER_IMAGE)
 
-#		-e UID=$(UID) \
-#		-e GID=$(GID) \
-#-u `stat -c "%u:%g" /home/mfinkel/src/opsys/cirrus` \
-
 build:
 	docker build \
 		--build-arg uid=$(UID) \
