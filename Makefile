@@ -16,6 +16,7 @@ build:
 	docker build \
 		--build-arg uid=$(UID) \
 		--build-arg gid=$(GID) \
+		--build-arg usr=$(USER) \
 		-t $(DOCKER_IMAGE) \
 		.
 
