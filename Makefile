@@ -22,5 +22,6 @@ build:
 
 clean:
 	docker rmi \
+		--force \
 		$(DOCKER_IMAGE)
 
