@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-DOCKER_IMAGE := devenv:mfinkel
+DOCKER_IMAGE := devenv:fffinkel
 
 UID := $(shell id -u)
 GID := $(shell id -g)
@@ -8,8 +8,8 @@ GID := $(shell id -g)
 run: build
 	docker run \
 		-it \
-		-v /home/mfinkel/.ssh:/root/.ssh/ \
-		-v /home/mfinkel/src/opsys/cirrus:/workspace/ \
+		-v /home/$(USER)/.ssh:/root/.ssh/ \
+		-v /home/$(USER):/workspace/ \
 		$(DOCKER_IMAGE)
 
 build:
