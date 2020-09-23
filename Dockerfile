@@ -28,16 +28,8 @@ RUN git clone https://github.com/fffinkel/dotfiles.git /home/$usr/config/dotfile
 RUN git clone https://github.com/fffinkel/vim.git /home/$usr/config/vim
 RUN git clone https://github.com/fffinkel/zsh.git /home/$usr/config/zsh
 
-RUN cd /home/$usr/config/zsh && git submodule init
-RUN cd /home/$usr/config/zsh &&  git submodule update
-
-RUN ln -s /home/$usr/config/vim/vim /home/$usr/.vim
-RUN ln -s /home/$usr/config/vim/vimrc /home/$usr/.vimrc
-RUN ln -s /home/$usr/config/zsh/zsh /home/$usr/.zsh
-RUN ln -s /home/$usr/config/zsh/zshrc /home/$usr/.zshrc
-
-RUN git clone https://github.com/VundleVim/Vundle.vim.git /home/$usr/.vim/bundle/Vundle.vim
-
-RUN vim +PluginInstall +qall
+RUN cd /home/$usr/config/zsh && make install
+RUN cd /home/$usr/config/vim && make install
+RUN cd /home/$usr/config/dotfiles && make install
 
 ENTRYPOINT zsh
